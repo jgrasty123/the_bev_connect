@@ -72,7 +72,7 @@ h1,h2,h3,h4{font-family:var(--display);line-height:1.02;letter-spacing:-.02em;fo
 .trust-row::before{content:"";position:absolute;left:0;top:20px;width:7px;height:7px;border-radius:50%;background:var(--red)}
 .trust-row .txt b{display:block;font-family:var(--display);font-size:1.02rem}
 .trust-row .txt span{font-size:.84rem;color:var(--muted-dark);line-height:1.5;display:block;margin-top:2px}
-@media(max-width:860px){.hero .wrap{grid-template-columns:1fr;gap:38px;padding:54px 24px 64px}.hero-art{order:-1}}
+@media(max-width:860px){.hero .wrap{grid-template-columns:1fr;gap:38px;padding:54px 24px 64px}}
 
 section{padding:84px 0}
 .sec-head{max-width:62ch;margin-bottom:48px}
@@ -114,6 +114,7 @@ section{padding:84px 0}
 .split-card p{color:var(--muted);margin-bottom:22px}
 .split-card.dark p{color:var(--muted-dark)}
 @media(max-width:860px){.split{grid-template-columns:1fr}}
+@media(max-width:860px){.book-split .form-card{order:-1}}
 
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
 .step{position:relative;padding-top:18px;border-top:3px solid var(--red)}
