@@ -1,0 +1,6 @@
+[build]
+  publish = "."
+
+# Netlify Forms are auto-detected from the data-netlify="true" attribute.
+# Form submissions appear in your Netlify dashboard under Forms,
+# and you can set up email notifications there.

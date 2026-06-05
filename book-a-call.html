@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Book a Discovery Call &mdash; The Bev Connect</title>
+<meta name="description" content="Book a discovery call with The Bev Connect. Get pricing, timing and a tailored alcohol fulfillment plan within 24 hours.">
+<meta property="og:title" content="Book a Discovery Call &mdash; The Bev Connect">
+<meta property="og:description" content="Book a discovery call with The Bev Connect. Get pricing, timing and a tailored alcohol fulfillment plan within 24 hours.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M9 2h6v3l-1 2v3l3 4v7a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-7l3-4V7L9 5V2Z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span>The Bev<b>Connect</b></a>
+    <button class="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="fulfillment.html">3PL Services</a>
+      <a href="rate-sheet.html">Rates</a>
+      <a href="marketing.html">Marketing</a>
+      <a href="book-a-call.html" class="btn btn-red nav-cta active">Book a Call <span class="arr">&#8594;</span></a>
+    </nav>
+  </div>
+</header>
+
+<section style="padding-top:60px;padding-bottom:30px">
+  <div class="wrap"><div class="sec-head center reveal"><span class="eyebrow">Let's talk</span><h2>Book a discovery call.</h2><p>Tell us what you ship and where you want to grow. We'll come back with pricing, timing, and a tailored plan within 24 hours.</p></div></div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="split" style="align-items:start">
+      <div class="reveal">
+        <!-- CALENDLY: replace data-url with your real link, e.g. https://calendly.com/thebevconnect/discovery-call -->
+        <div class="calendly-inline-widget" data-url="https://calendly.com/YOUR-CALENDLY-HANDLE/discovery-call" style="min-width:320px;height:680px;border-radius:18px;overflow:hidden;border:1px solid var(--line)"></div>
+        <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+        <div class="note-box">Scheduler not loading yet? Use the form to request a call &mdash; we'll reach out the same business day.</div>
+      </div>
+      <div class="form-card reveal">
+        <h3 style="font-size:1.4rem;margin-bottom:6px">Or request a call</h3>
+        <p style="color:var(--muted);margin-bottom:20px;font-size:.96rem">Prefer we reach out? Drop your details and we'll be in touch.</p>
+        <form name="book-a-call" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
+          <input type="hidden" name="form-name" value="book-a-call">
+          <p hidden><label>Don't fill this out: <input name="bot-field"></label></p>
+          <div class="form-row"><div class="field"><label>First name *</label><input type="text" name="first-name" required></div><div class="field"><label>Last name</label><input type="text" name="last-name"></div></div>
+          <div class="field"><label>Work email *</label><input type="email" name="email" required></div>
+          <div class="field"><label>Phone</label><input type="tel" name="phone"></div>
+          <div class="form-row"><div class="field"><label>Brand / Company *</label><input type="text" name="company" required></div><div class="field"><label>Monthly order volume</label><select name="volume"><option value="">Select&hellip;</option><option>Under 100</option><option>100&ndash;500</option><option>500&ndash;2,000</option><option>2,000+</option></select></div></div>
+          <div class="field"><label>What do you need help with?</label><textarea name="message" placeholder="e.g. We ship wine DTC and need a compliant fulfillment partner for ~300 orders/month."></textarea></div>
+          <button type="submit" class="btn btn-red" style="width:100%;justify-content:center">Request my call <span class="arr">&#8594;</span></button>
+          <p class="form-note">We typically respond within one business day.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-ink">
+  <div class="wrap"><div class="why-grid reveal">
+    <div class="why"><div class="n">01</div><h3>24-hour turnaround</h3><p>Pricing, timing and a tailored plan back to you within one business day.</p></div>
+    <div class="why"><div class="n">02</div><h3>No commitment</h3><p>Month-to-month programs. We earn the relationship every single month.</p></div>
+    <div class="why"><div class="n">03</div><h3>Compliance built in</h3><p>Age verification and excise reporting handled &mdash; you stay focused on the brand.</p></div>
+    <div class="why"><div class="n">04</div><h3>One roof</h3><p>Fulfillment now, marketing when you're ready. One partner, one invoice.</p></div>
+  </div></div>
+</section>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="index.html"><span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M9 2h6v3l-1 2v3l3 4v7a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-7l3-4V7L9 5V2Z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span>The Bev<b>Connect</b></a>
+        <p>Alcohol-ready 3PL fulfillment and DTC growth for beer, wine, and spirits brands. Based in Ventura, California.</p>
+      </div>
+      <div class="foot-col"><h5>Services</h5><a href="fulfillment.html">3PL Fulfillment</a><a href="rate-sheet.html">Rates &amp; Pricing</a><a href="marketing.html">Marketing</a><a href="book-a-call.html">Book a Call</a></div>
+      <div class="foot-col"><h5>Contact</h5><a href="mailto:hello@thebevconnect.com">hello@thebevconnect.com</a><a href="book-a-call.html">Request pricing</a><p style="margin-top:10px">2264 Goodyear Ave.<br>Ventura, CA 93003</p></div>
+    </div>
+    <div class="foot-base"><span>&copy; 2026 The Bev Connect. All rights reserved.</span><span>Compliant alcohol fulfillment &middot; UPS &amp; GLS network</span></div>
+  </div>
+</footer>
+<script src="assets/main.js"></script>
+</body>
+</html>
