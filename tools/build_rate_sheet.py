@@ -66,11 +66,11 @@ ADDONS = [
 ]
 
 COVERAGE = [
-    'Alcohol: ships to every U.S. state except Utah & Alabama (42+ states).',
-    'Non-alcoholic: all U.S. states, Armed Services addresses, Canada & Mexico.',
-    'Pallet-in / pallet-out receiving and bulk storage available at our Ventura warehouse.',
-    'Carriers: UPS & GLS, with overnight, 2-day, 3-day & ground options.',
-    'Operations: packing Mon-Fri, plus Saturdays in the Nov-Dec peak.',
+    'Alcohol: 42+ states (not Utah or Alabama).',
+    'Non-alcohol: all 50 states, APO/FPO, Canada & Mexico.',
+    'Pallet-in / pallet-out receiving and bulk storage.',
+    'Carriers: UPS & GLS - overnight, 2-day, 3-day, ground.',
+    'Packing Mon-Fri, plus Saturdays in Nov-Dec peak.',
 ]
 
 
@@ -108,19 +108,19 @@ def build():
     c.drawRightString(R, H - 88, '(805) 413-4141 - Ventura, CA')
 
     # ---------------- title block
-    y = H - 150
+    y = H - 138
     c.setFillColor(ACCENT)
     c.setFont('Helvetica-Bold', 8.5)
     c.drawString(L, y, 'ALCOHOL FULFILLMENT RATE SHEET')
 
-    y -= 34
+    y -= 28
     c.setFillColor(INK)
     c.setFont('Helvetica-Bold', 26)
     c.drawString(L, y, 'Transparent pricing, by product')
-    y -= 28
+    y -= 26
     c.drawString(L, y, 'category.')
 
-    y -= 26
+    y -= 22
     c.setFillColor(BODY)
     c.setFont('Helvetica', 10.5)
     lede = ('Compliant 3PL fulfillment for beer, wine & spirits brands shipping DTC to 42+ '
@@ -131,9 +131,9 @@ def build():
         y -= 14
 
     # ---------------- rate table
-    y -= 18
+    y -= 14
     col = [L + 10, 232, 350, 468]     # label, wine, spirits, beer (centred cols)
-    head_h = 25
+    head_h = 23
     c.setFillColor(INK)
     c.rect(L, y - head_h, R - L, head_h, stroke=0, fill=1)
     c.setFillColor(WHITE)
@@ -146,7 +146,7 @@ def build():
     c.setFont('Helvetica', 8.7)
     for i, (label, *vals) in enumerate(ROWS):
         lines = max(len(v.split('\n')) for v in vals)
-        h = 25 if lines == 1 else 36
+        h = 22 if lines == 1 else 32
         c.setFillColor(PAPER if i % 2 == 0 else WHITE)
         c.rect(L, y - h, R - L, h, stroke=0, fill=1)
 
@@ -169,7 +169,7 @@ def build():
     y -= 4
     for i, (label, val) in enumerate(FULLROWS):
         vlines = wrapped(c, val, 'Helvetica', 8.7, R - 232 - 12)
-        h = 23 if len(vlines) == 1 else 34
+        h = 21 if len(vlines) == 1 else 30
         c.setFillColor(WHITE if i % 2 == 0 else PAPER)
         c.rect(L, y - h, R - L, h, stroke=0, fill=1)
 
@@ -188,44 +188,21 @@ def build():
                 yy -= 11
         y -= h
 
-    # ---------------- two-up: add-ons | coverage
-    y -= 30
-    # Two independent columns with a real gutter between them.
-    LEFT_X0, LEFT_X1 = L, 300          # add-ons: name at X0, price right-aligned at X1
-    RIGHT_X0 = 330                     # coverage: starts after a 30pt gutter
-    mid = LEFT_X1
+    # ---------------- CTA band (directly under the rate table)
+    # Order is: table -> CTA band -> two-up (add-ons | coverage) -> fine print.
+    # Everything is measured and flowed, never pinned to a magic number, so the
+    # sections cannot overrun each other.
+    BAND_H   = 48
+    FINE_Y   = 30                     # baseline of last fine-print line
+    FINE_TOP = FINE_Y + 20            # fine print block occupies roughly 30..50
+
+    LEFT_X0, LEFT_X1 = L, 262         # add-ons: name at X0, price right-aligned at X1
+    RIGHT_X0 = 292                    # coverage: starts after a 30pt gutter
+
+    y -= 14
+    band_y = y - BAND_H
     c.setFillColor(INK)
-    c.setFont('Helvetica-Bold', 9.5)
-    c.drawString(L, y, 'Popular add-ons & upsells')
-    c.drawString(RIGHT_X0, y, 'Coverage & carriers')
-
-    c.setStrokeColor(RULE)
-    c.setLineWidth(0.8)
-    c.line(LEFT_X0, y - 8, LEFT_X1, y - 8)
-    c.line(RIGHT_X0, y - 8, R, y - 8)
-
-    ay = y - 24
-    c.setFont('Helvetica', 9)
-    for name, price in ADDONS:
-        c.setFillColor(BODY)
-        c.drawString(L, ay, name)
-        c.setFillColor(ACCENT)
-        c.drawRightString(LEFT_X1, ay, price)
-        ay -= 15
-
-    cy = y - 24
-    c.setFillColor(BODY)
-    c.setFont('Helvetica', 9)
-    for item in COVERAGE:
-        for ln in wrapped(c, item, 'Helvetica', 9, R - RIGHT_X0):
-            c.drawString(RIGHT_X0, cy, ln)
-            cy -= 11
-        cy -= 4
-
-    # ---------------- CTA band
-    band_y = 96
-    c.setFillColor(INK)
-    c.rect(L, band_y, R - L, 52, stroke=0, fill=1)
+    c.rect(L, band_y, R - L, BAND_H, stroke=0, fill=1)
     c.setFillColor(WHITE)
     c.setFont('Helvetica-Bold', 11.5)
     c.drawString(L + 18, band_y + 32, 'Ready to hand off fulfillment?')
@@ -238,13 +215,57 @@ def build():
     c.setFont('Helvetica-Bold', 10)
     c.drawRightString(R - 18, band_y + 24, 'thebevconnect.com')
 
+    # ---------------- two-up: add-ons | coverage
+    head_y = band_y - 24
+
+    # Measure both columns first.
+    cov_lines = [wrapped(c, item, 'Helvetica', 9, R - RIGHT_X0) for item in COVERAGE]
+    addon_h = len(ADDONS) * 14
+    cov_h   = sum(len(ls) * 11 + 3 for ls in cov_lines)
+    need    = 24 + max(addon_h, cov_h)          # 24 = header + rule
+
+    # Hard guarantee: the block must fit between head_y and the fine print.
+    avail = head_y - FINE_TOP
+    if need > avail:
+        raise SystemExit(
+            f'Two-up block needs {need:.0f}pt but only {avail:.0f}pt is available '
+            f'above the fine print. Trim ADDONS/COVERAGE or shorten the table.')
+
+    c.setFillColor(INK)
+    c.setFont('Helvetica-Bold', 9.5)
+    c.drawString(LEFT_X0, head_y, 'Popular add-ons & upsells')
+    c.drawString(RIGHT_X0, head_y, 'Coverage & carriers')
+
+    c.setStrokeColor(RULE)
+    c.setLineWidth(0.8)
+    c.line(LEFT_X0, head_y - 8, LEFT_X1, head_y - 8)
+    c.line(RIGHT_X0, head_y - 8, R, head_y - 8)
+
+    ay = head_y - 24
+    c.setFont('Helvetica', 9)
+    for name, price in ADDONS:
+        c.setFillColor(BODY)
+        c.drawString(LEFT_X0, ay, name)
+        c.setFillColor(ACCENT)
+        c.drawRightString(LEFT_X1, ay, price)
+        ay -= 14
+
+    cy = head_y - 24
+    c.setFillColor(BODY)
+    c.setFont('Helvetica', 9)
+    for lines in cov_lines:
+        for ln in lines:
+            c.drawString(RIGHT_X0, cy, ln)
+            cy -= 11
+        cy -= 3
+
     # ---------------- fine print
     c.setFillColor(MUTED)
     c.setFont('Helvetica', 8)
-    c.drawCentredString(W / 2, 50,
+    c.drawCentredString(W / 2, FINE_Y + 12,
                         'Pricing is indicative and subject to a written services agreement. '
                         'Volume and custom-program rates available on request.')
-    c.drawCentredString(W / 2, 38,
+    c.drawCentredString(W / 2, FINE_Y,
                         '(c) 2026 The Bev Connect - Ventura, California - '
                         'hello@thebevconnect.com - (805) 413-4141')
 
