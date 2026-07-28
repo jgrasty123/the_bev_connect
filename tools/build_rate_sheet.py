@@ -66,7 +66,7 @@ ADDONS = [
 ]
 
 COVERAGE = [
-    'Alcohol: 42+ states (not Utah or Alabama).',
+    'Alcohol: Most U.S. states (not Utah or Alabama).',
     'Non-alcohol: all 50 states, APO/FPO, Canada & Mexico.',
     'Pallet-in / pallet-out receiving and bulk storage.',
     'Carriers: UPS & GLS - overnight, 2-day, 3-day, ground.',
