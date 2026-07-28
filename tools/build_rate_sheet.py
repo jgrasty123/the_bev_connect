@@ -66,7 +66,7 @@ ADDONS = [
 ]
 
 COVERAGE = [
-    'Alcohol: Most U.S. states (not Utah or Alabama).',
+    'Alcohol: Broad compliant coverage across most of the U.S.',
     'Non-alcohol: all 50 states, APO/FPO, Canada & Mexico.',
     'Pallet-in / pallet-out receiving and bulk storage.',
     'Carriers: UPS & GLS - overnight, 2-day, 3-day, ground.',
@@ -105,7 +105,7 @@ def build():
     c.drawString(107, H - 96, 'ALCOHOL-READY 3PL FULFILLMENT')
     c.setFont('Helvetica', 8.5)
     c.drawRightString(R, H - 76, 'hello@thebevconnect.com')
-    c.drawRightString(R, H - 88, '(805) 413-4141 - Ventura, CA')
+    c.drawRightString(R, H - 88, '(805) 413-4141 - Ventura')
 
     # ---------------- title block
     y = H - 138
@@ -124,7 +124,7 @@ def build():
     c.setFillColor(BODY)
     c.setFont('Helvetica', 10.5)
     lede = ('Compliant 3PL fulfillment for beer, wine & spirits brands shipping DTC to 42+ '
-            'states from our licensed warehouse in Ventura, California. One partner, one '
+            'destinations from our licensed warehouse in Ventura. One partner, one '
             'invoice, no markup games.')
     for ln in wrapped(c, lede, 'Helvetica', 10.5, R - L):
         c.drawString(L, y, ln)
@@ -266,7 +266,7 @@ def build():
                         'Pricing is indicative and subject to a written services agreement. '
                         'Volume and custom-program rates available on request.')
     c.drawCentredString(W / 2, FINE_Y,
-                        '(c) 2026 The Bev Connect - Ventura, California - '
+                        '(c) 2026 The Bev Connect - Ventura - '
                         'hello@thebevconnect.com - (805) 413-4141')
 
     c.showPage()
