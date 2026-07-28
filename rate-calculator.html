@@ -99,7 +99,7 @@
     margin-bottom: 20px;
   }
 .calcpage h1 {
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: 'Fraunces', serif;
     font-weight: 900;
     font-size: clamp(44px, 6.5vw, 84px);
     line-height: 0.98;
@@ -327,7 +327,7 @@
     margin-bottom: 6px;
   }
 .calcpage .od-col .v {
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: 'Fraunces', serif;
     font-weight: 700; font-size: 20px;
     color: var(--text-black); line-height: 1.1;
     letter-spacing: -0.01em;
@@ -410,7 +410,7 @@
     color: var(--text-mute-b);
   }
 .calcpage .total .amt {
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: 'Fraunces', serif;
     font-weight: 900; font-size: 40px;
     color: var(--text-black); letter-spacing: -0.03em; line-height: 1;
   }
@@ -607,59 +607,19 @@
         <div class="section-label">Destination</div>
 
         <div class="field">
-          <label>State</label>
-          <select id="state">
-            <option value="CA">California</option>
-            <option value="NV">Nevada</option>
-            <option value="AZ">Arizona</option>
-            <option value="OR">Oregon</option>
-            <option value="WA">Washington</option>
-            <option value="ID">Idaho</option>
-            <option value="MT">Montana</option>
-            <option value="WY">Wyoming</option>
-            <option value="CO">Colorado</option>
-            <option value="NM">New Mexico</option>
-            <option value="ND">North Dakota</option>
-            <option value="SD">South Dakota</option>
-            <option value="NE">Nebraska</option>
-            <option value="KS">Kansas</option>
-            <option value="OK">Oklahoma</option>
-            <option value="TX">Texas</option>
-            <option value="MN">Minnesota</option>
-            <option value="IA">Iowa</option>
-            <option value="MO">Missouri</option>
-            <option value="AR">Arkansas</option>
-            <option value="LA">Louisiana</option>
-            <option value="WI">Wisconsin</option>
-            <option value="IL" selected>Illinois</option>
-            <option value="IN">Indiana</option>
-            <option value="MI">Michigan</option>
-            <option value="KY">Kentucky</option>
-            <option value="TN">Tennessee</option>
-            <option value="MS">Mississippi</option>
-            <option value="OH">Ohio</option>
-            <option value="FL">Florida</option>
-            <option value="GA">Georgia</option>
-            <option value="SC">South Carolina</option>
-            <option value="NC">North Carolina</option>
-            <option value="VA">Virginia</option>
-            <option value="WV">West Virginia</option>
-            <option value="PA">Pennsylvania</option>
-            <option value="NY">New York</option>
-            <option value="NJ">New Jersey</option>
-            <option value="DE">Delaware</option>
-            <option value="MD">Maryland</option>
-            <option value="DC">Washington, DC</option>
-            <option value="CT">Connecticut</option>
-            <option value="RI">Rhode Island</option>
-            <option value="MA">Massachusetts</option>
-            <option value="VT">Vermont</option>
-            <option value="NH">New Hampshire</option>
-            <option value="ME">Maine</option>
-            <option value="AK">Alaska</option>
-            <option value="HI">Hawaii</option>
+          <label>Carrier zone</label>
+          <select id="zone">
+            <option value="2">Zone 2</option>
+            <option value="3">Zone 3</option>
+            <option value="4">Zone 4</option>
+            <option value="5">Zone 5</option>
+            <option value="6">Zone 6</option>
+            <option value="7" selected>Zone 7</option>
+            <option value="8">Zone 8</option>
+            <option value="44">Extended zone 44</option>
+            <option value="46">Extended zone 46</option>
           </select>
-          <div id="ship-note" class="autonote"></div>
+          <div id="ship-note" class="autonote show">Use the carrier zone for the destination ZIP code.</div>
         </div>
 
         <div class="toggle-row">
@@ -762,12 +722,12 @@
         <div class="od">
           <div class="od-col">
             <div class="k">Origin</div>
-            <div class="v">Ventura, CA</div>
+            <div class="v">Ventura</div>
           </div>
           <div class="od-arrow">→</div>
           <div class="od-col" style="text-align:right;">
             <div class="k">Destination</div>
-            <div class="v" id="dest-name">Illinois</div>
+            <div class="v" id="dest-name">Carrier zone 7</div>
           </div>
         </div>
 
@@ -858,7 +818,7 @@
   </div>
 
   <div class="disclaimer">
-    <strong>How this works.</strong> Shipping is carrier pass-through (WeShip-negotiated UPS Ground) plus fuel surcharge plus 8% admin. Pick &amp; pack, upsells, and packaging materials are billed per our published rate sheet. Zone is approximated from destination state; the true zone is set by ZIP and confirmed at label creation. Our shipping rate already includes adult signature, residential delivery, and DAS, which UPS bills as separate accessorials at retail. <strong>The invoice always wins</strong> — this is a good-faith estimate, not a binding quote.
+    <strong>How this works.</strong> Shipping is carrier pass-through (WeShip-negotiated UPS Ground) plus fuel surcharge plus 8% admin. Pick &amp; pack, upsells, and packaging materials are billed per our published rate sheet. Select the carrier zone for the destination ZIP; the final zone is confirmed at label creation. Our shipping rate already includes adult signature, residential delivery, and DAS, which UPS bills as separate accessorials at retail. <strong>The invoice always wins</strong> — this is a good-faith estimate, not a binding quote.
   </div>
 
 
@@ -870,10 +830,10 @@
     <div class="foot-grid">
       <div>
         <a class="brand" href="index.html"><span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M9 2h6v3l-1 2v3l3 4v7a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-7l3-4V7L9 5V2Z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span>The Bev<b>Connect</b></a>
-        <p>Alcohol-ready 3PL fulfillment and DTC growth for beer, wine, and spirits brands. Based in Ventura, California.</p>
+        <p>Alcohol-ready 3PL fulfillment and DTC growth for beer, wine, and spirits brands. Based in Ventura.</p>
       </div>
       <div class="foot-col"><h5>Services</h5><a href="fulfillment.html">3PL Fulfillment</a><a href="rate-sheet.html">Rates &amp; Pricing</a><a href="marketing.html">Marketing</a><a href="book-a-call.html">Book a Call</a><a href="overview-deck.html">Overview Deck</a><a href="rate-calculator.html">Rate Calculator</a></div>
-      <div class="foot-col"><h5>Contact</h5><a href="mailto:hello@thebevconnect.com">hello@thebevconnect.com</a><a href="tel:+18054134141">(805) 413-4141</a><a href="book-a-call.html">Request pricing</a><p style="margin-top:10px">2264 Goodyear Ave.<br>Ventura, CA 93003</p></div>
+      <div class="foot-col"><h5>Contact</h5><a href="mailto:hello@thebevconnect.com">hello@thebevconnect.com</a><a href="tel:+18054134141">(805) 413-4141</a><a href="book-a-call.html">Request pricing</a><p style="margin-top:10px">2264 Goodyear Ave.<br>Ventura 93003</p></div>
     </div>
     <div class="foot-base"><span>&copy; 2026 The Bev Connect. All rights reserved.</span><span>Compliant alcohol fulfillment &middot; UPS &amp; GLS network</span></div>
   </div>
@@ -1352,24 +1312,7 @@ const UPS_DAILY = [
 ];
 
 
-const STATE_ZONES = {
-  CA: 2,
-  NV: 3, AZ: 3, OR: 3,
-  WA: 4, ID: 4,
-  MT: 5, WY: 5, CO: 5, NM: 5,
-  ND: 6, SD: 6, NE: 6, KS: 6, OK: 6, TX: 6, MN: 6, IA: 6, MO: 6, AR: 6, LA: 6, WI: 6,
-  IL: 7, IN: 7, MI: 7, KY: 7, TN: 7, MS: 7, OH: 7,
-  FL: 8, GA: 8, SC: 8, NC: 8, VA: 8, WV: 8, PA: 8, NY: 8, NJ: 8, DE: 8, MD: 8, DC: 8,
-  CT: 8, RI: 8, MA: 8, VT: 8, NH: 8, ME: 8,
-  AK: 44, HI: 46,
-};
 const ZONE_COL = { 2:0, 3:1, 4:2, 5:3, 6:4, 7:5, 8:6, 44:7, 45:8, 46:9 };
-
-// Alcohol shipping restrictions — Utah, Alabama excluded per Bev Connect coverage
-const ALC_BLOCKED = { UT: true, AL: true };
-
-const STATE_NAMES = {};
-document.querySelectorAll('#state option').forEach(o => STATE_NAMES[o.value] = o.textContent);
 
 // Retail add-ons hidden inside WeShip Ground
 const RETAIL_SIG = 9.95;
@@ -1424,7 +1367,7 @@ function calc() {
   const W = parseFloat($('width').value)  || 0;
   const H = parseFloat($('height').value) || 0;
   const actualRaw = parseFloat($('actual').value) || 0;
-  const st = $('state').value;
+  const zone = parseInt($('zone').value, 10);
   const productType = $('product-type').value;
   const quantity = Math.max(1, parseInt($('quantity').value) || 1);
 
@@ -1443,7 +1386,7 @@ function calc() {
   const dimLb    = ceilLb(dimRaw);
   const billed   = Math.max(actualLb, dimLb);
 
-  $('dest-name').textContent = STATE_NAMES[st] || st;
+  $('dest-name').textContent = 'Carrier zone ' + zone;
 
   $('v-actual').textContent = actualLb + ' lb';
   $('sub-actual').textContent = actualRaw ? '(' + actualRaw + ' lb entered)' : '';
@@ -1453,15 +1396,6 @@ function calc() {
 
   $('row-actual').classList.toggle('winner', actualLb >= dimLb && actualLb > 0);
   $('row-dim').classList.toggle('winner', dimLb > actualLb);
-
-  // Alcohol shipping restriction warning
-  const stateBlocked = state.alcohol && ALC_BLOCKED[st];
-  if (stateBlocked) {
-    $('ship-note').textContent = "⚠ We don't ship alcohol to " + STATE_NAMES[st] + " (state restriction).";
-    $('ship-note').classList.add('show');
-  } else {
-    $('ship-note').classList.remove('show');
-  }
 
   $('warn').classList.toggle('hidden', billed <= 150);
   if (billed > 150) {
@@ -1473,7 +1407,6 @@ function calc() {
     return;
   }
 
-  const zone = STATE_ZONES[st];
   const col = ZONE_COL[zone];
   const rowIdx = billed - 1;
 
@@ -1571,7 +1504,7 @@ function calc() {
   }
 }
 
-['length','width','height','actual','fuel','admin','handling','state','ice-count',
+['length','width','height','actual','fuel','admin','handling','zone','ice-count',
  'product-type','quantity','gift-box','engraving','materials'].forEach(id => {
   const el = $(id);
   if (el) {
