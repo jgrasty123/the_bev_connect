@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Retail vs Fee Model Calculator — The Bev Connect</title>
+<meta name="description" content="Compare the retail model (we buy and sell your product) with the fee model (you sell, we fulfill) — margins, fulfillment costs, and break-even pricing side by side.">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0B0A; --ink-2:#171211; --ink-3:#211A18; --line:#332A27;
+    --paper:#F5F2EC; --muted:#9A938C; --dim:#6E6763;
+    --red:#E03A16; --green:#4BAE7E; --amber:#E0A216;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--ink);color:var(--paper);font-family:Inter,system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:32px 24px 72px}
+
+  header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:30px}
+  .brandrow{display:flex;align-items:center;gap:12px;margin-bottom:26px}
+  .mark{width:34px;height:34px;border-radius:9px;background:var(--red);display:grid;place-items:center;flex:none}
+  .mark svg{width:17px;height:17px}
+  .wordmark{font-family:Anton,sans-serif;font-size:19px;letter-spacing:.02em;text-transform:uppercase}
+  .wordmark span{color:var(--red)}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-bottom:14px}
+  h1{font-family:Anton,sans-serif;font-weight:400;font-size:clamp(32px,5vw,56px);line-height:.96;text-transform:uppercase;margin:0 0 14px;max-width:17ch}
+  .lede{color:var(--muted);max-width:64ch;margin:0}
+  .lede b{color:var(--paper);font-weight:600}
+
+  /* ---- mode switch: the signature control ---- */
+  .switch{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:26px;background:var(--ink-2)}
+  .switch button{
+    background:none;border:0;color:var(--muted);cursor:pointer;padding:12px 20px;text-align:left;
+    font-family:Inter,sans-serif;font-size:14px;font-weight:600;transition:background .18s ease,color .18s ease
+  }
+  .switch button + button{border-left:1px solid var(--line)}
+  .switch button small{display:block;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:400;color:var(--dim);margin-top:3px}
+  .switch button[aria-pressed="true"]{background:var(--red);color:#fff}
+  .switch button[aria-pressed="true"] small{color:rgba(255,255,255,.72)}
+  .switch button:focus-visible{outline:2px solid var(--paper);outline-offset:-3px}
+
+  .chain{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.04em;color:var(--dim);margin-bottom:2px}
+  .chain b{color:var(--paper);font-weight:500}
+  .chain em{color:var(--red);font-style:normal}
+
+  .cols{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:32px;align-items:start}
+  @media(max-width:900px){.cols{grid-template-columns:1fr}}
+
+  .panel{background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .panel + .panel{margin-top:16px}
+  .panel h2{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 16px;font-weight:500}
+
+  .field{margin-bottom:13px}
+  .field:last-child{margin-bottom:0}
+  label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px}
+  .inputbox{position:relative;display:flex;align-items:center}
+  .inputbox .pre,.inputbox .post{position:absolute;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);pointer-events:none}
+  .inputbox .pre{left:11px}
+  .inputbox .post{right:11px}
+  input[type=number],select{width:100%;background:var(--ink-3);border:1px solid var(--line);color:var(--paper);border-radius:8px;padding:9px 11px;font-family:"IBM Plex Mono",monospace;font-size:14px;appearance:none;-moz-appearance:textfield}
+  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .inputbox.has-pre input{padding-left:24px}
+  .inputbox.has-post input{padding-right:30px}
+  input:focus,select:focus{outline:2px solid var(--red);outline-offset:1px;border-color:transparent}
+  select{cursor:pointer;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 15px) 17px,calc(100% - 10px) 17px;background-size:5px 5px;background-repeat:no-repeat}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .hint{font-size:11.5px;color:var(--dim);margin-top:5px;line-height:1.45}
+  [hidden]{display:none!important}
+
+  .verdict{border:1px solid var(--line);border-radius:14px;padding:22px 24px;background:var(--ink-2);position:relative;overflow:hidden}
+  .verdict::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--red)}
+  .verdict.good::before{background:var(--green)}
+  .verdict.warn::before{background:var(--amber)}
+  .vtop{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-end}
+  .bignum{font-family:Anton,sans-serif;font-size:clamp(38px,6.4vw,60px);line-height:.9}
+  .bignum.neg{color:var(--red)}
+  .bignum.pos{color:var(--green)}
+  .vlabel{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .vsub{font-size:14px;color:var(--muted);margin-top:16px;line-height:1.55}
+  .vsub strong{color:var(--paper)}
+  .tag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:5px;border:1px solid currentColor}
+  .tag.good{color:var(--green)}.tag.warn{color:var(--amber)}.tag.bad{color:var(--red)}
+
+  .moneybar{margin-top:24px}
+  .bar{display:flex;height:38px;border-radius:7px;overflow:hidden;background:var(--ink-3);border:1px solid var(--line)}
+  .seg{position:relative;min-width:0;flex-basis:0;transition:flex-grow .28s ease}
+  .seg span{position:absolute;inset:0;display:grid;place-items:center;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:#0E0B0A;font-weight:600}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:12px;color:var(--muted)}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:right;padding:8px 0;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500;padding-bottom:10px}
+  td.num{font-family:"IBM Plex Mono",monospace}
+  tr.total td{border-bottom:none;border-top:1px solid var(--line);padding-top:12px;font-weight:600}
+  tr.sub td{color:var(--muted)}
+  .cost td.num{color:#E8B4A4}
+  .neg{color:var(--red)}
+  .pos{color:var(--green)}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:9px;vertical-align:middle}
+  .scen td.hit{color:var(--green)}
+  .scen td.miss{color:var(--red)}
+  .scen tr.here td{background:rgba(224,58,22,.09)}
+  .scen tr.here td:first-child{box-shadow:inset 3px 0 0 var(--red)}
+  .scen td,.scen th{padding-left:8px;padding-right:8px}
+  .scen td:first-child,.scen th:first-child{padding-left:10px}
+
+  .note{margin-top:16px;padding:14px 16px;border-left:2px solid var(--red);background:var(--ink-2);font-size:13px;color:var(--muted);line-height:1.6;border-radius:0 8px 8px 0}
+  .note strong{color:var(--paper)}
+  .sidenote{margin-top:14px;font-size:13px;color:var(--muted)}
+  .sidenote strong{color:var(--paper);font-family:"IBM Plex Mono",monospace}
+  footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--dim);line-height:1.65}
+  .btn{background:none;border:1px solid var(--line);color:var(--muted);border-radius:7px;padding:7px 13px;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+  .btn:hover{border-color:var(--red);color:var(--red)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brandrow">
+    <a href="index.html" style="display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none">
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 2h4v4.2l3 4.3V22H7V10.5l3-4.3V2z"/><path d="M7 14h10"/>
+      </svg>
+    </div>
+    <div class="wordmark">The Bev <span>Connect</span></div></a>
+  </div>
+
+  <div class="eyebrow">Unit economics</div>
+  <h1 id="hTitle">What's left after the bottle ships</h1>
+  <p class="lede" id="hLede"></p>
+
+  <div style="margin-top:24px">
+    <div class="switch" role="group" aria-label="Choose a model">
+      <button type="button" id="btnRetail" aria-pressed="true">We sell it<small>Retail model</small></button>
+      <button type="button" id="btnFee" aria-pressed="false">You sell it<small>Fee model</small></button>
+    </div>
+    <div class="chain" id="chain"></div>
+  </div>
+</header>
+
+<div class="cols">
+
+  <!-- ============ INPUTS ============ -->
+  <div>
+    <div class="panel">
+      <h2>The deal</h2>
+
+      <div class="field">
+        <label for="brandPrice" id="lblBrandPrice">Your unit price to the distributor</label>
+        <div class="inputbox has-pre"><span class="pre">$</span><input type="number" id="brandPrice" value="10.00" step="0.25" min="0"></div>
+        <div class="hint" id="hintBrandPrice"></div>
+      </div>
+
+      <div class="field" data-mode="retail">
+        <label for="distMarkup">Distributor markup</label>
+        <div class="inputbox has-post"><input type="number" id="distMarkup" value="10" step="1" min="0"><span class="post">%</span></div>
+        <div class="hint">What the distributor adds before selling to Go-To Gifting.</div>
+      </div>
+
+      <div class="field">
+        <label for="retail">Retail price to the customer, per unit</label>
+        <div class="inputbox has-pre"><span class="pre">$</span><input type="number" id="retail" value="25.00" step="0.50" min="0"></div>
+      </div>
+
+      <div class="pair">
+        <div class="field">
+          <label for="units">Units per order</label>
+          <div class="inputbox"><input type="number" id="units" value="1" step="1" min="1"></div>
+        </div>
+        <div class="field">
+          <label for="shipCharged">Shipping charged</label>
+          <div class="inputbox has-pre"><span class="pre">$</span><input type="number" id="shipCharged" value="0.00" step="0.50" min="0"></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="targetMargin" id="lblTarget">Target margin on net sales</label>
+        <div class="inputbox has-post"><input type="number" id="targetMargin" value="17" step="0.5" min="0"><span class="post">%</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 id="hFulfil">Fulfilment stack</h2>
+
+      <div class="field" data-mode="fee">
+        <label for="category">Pick &amp; pack rate</label>
+        <select id="category">
+          <option value="3.50">Beer / RTD — $3.50</option>
+          <option value="4.00">Wine — $4.00</option>
+          <option value="4.75" selected>Spirits — $4.75</option>
+        </select>
+        <div class="hint">Billed by The Bev Connect on every order you send us.</div>
+      </div>
+
+      <div class="pair" data-mode="fee">
+        <div class="field">
+          <label for="addlPick">Each extra unit picked</label>
+          <div class="inputbox has-pre"><span class="pre">$</span><input type="number" id="addlPick" value="1.50" step="0.25" min="0"></div>
+        </div>
+        <div class="field">
+          <label for="adminFee">Carrier admin fee</label>
+          <div class="inputbox has-pre"><span class="pre">$</span><input type="number" id="adminFee" value="0.00" step="0.25" min="0"></div>
+        </div>
+      </div>
+
+      <div class="pair" data-mode="retail">
+        <div class="field">
+          <label for="handling">Internal handling, 1st unit</label>
+          <div class="inputbox has-pre"><span class="pre">$</span><input type="number" id="handling" value="0.00" step="0.25" min="0"></div>
+        </div>
+        <div class="field">
+          <label for="handlingAddl">Each extra unit</label>
+          <div class="inputbox has-pre"><span class="pre">$</span><input type="number" id="handlingAddl" value="0.00" step="0.25" min="0"></div>
+        </div>
+      </div>
+      <div class="hint" data-mode="retail">No pick &amp; pack fee applies in the retail model — Go-To Gifting owns the inventory, so there is no client to invoice. Leave these at zero to see the deal as quoted, or add your true labour cost per order to see the internal picture.</div>
+
+      <div class="pair" style="margin-top:13px">
+        <div class="field">
+          <label for="packaging">Packaging, 1st unit</label>
+          <div class="inputbox has-pre"><span class="pre">$</span><input type="number" id="packaging" value="3.50" step="0.25" min="0"></div>
+        </div>
+        <div class="field">
+          <label for="carrier">Carrier, 1st unit</label>
+          <div class="inputbox has-pre"><span class="pre">$</span><input type="number" id="carrier" value="13.00" step="0.50" min="0"></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="addlCarrier">Each extra unit shipped</label>
+        <div class="inputbox has-pre"><span class="pre">$</span><input type="number" id="addlCarrier" value="1.75" step="0.25" min="0"></div>
+        <div class="hint">Carrier assumes ground with adult signature — required on every alcohol delivery, and the reason freight runs high on a one-bottle order.</div>
+      </div>
+
+      <div class="pair" style="margin-top:13px">
+        <div class="field">
+          <label for="procPct">Card processing</label>
+          <div class="inputbox has-post"><input type="number" id="procPct" value="2.9" step="0.1" min="0"><span class="post">%</span></div>
+        </div>
+        <div class="field">
+          <label for="procFixed">Per transaction</label>
+          <div class="inputbox has-pre"><span class="pre">$</span><input type="number" id="procFixed" value="0.30" step="0.05" min="0"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Tax</h2>
+      <div class="field">
+        <label for="salesTax">Sales tax rate</label>
+        <div class="inputbox has-post"><input type="number" id="salesTax" value="7.75" step="0.25" min="0"><span class="post">%</span></div>
+        <div class="hint">Collected from the customer and remitted. It does not change the margin — it only raises the card-processing fee.</div>
+      </div>
+
+      <div class="pair">
+        <div class="field">
+          <label for="fet">Federal excise, per unit</label>
+          <div class="inputbox has-pre"><span class="pre">$</span><input type="number" id="fet" value="0.00" step="0.10" min="0"></div>
+        </div>
+        <div class="field">
+          <label for="stateExcise">State excise, per unit</label>
+          <div class="inputbox has-pre"><span class="pre">$</span><input type="number" id="stateExcise" value="0.00" step="0.10" min="0"></div>
+        </div>
+      </div>
+      <div class="hint">Leave these at zero if excise is already inside the price. Federal excise is paid by the producer at the bonded premises; California excise is paid by the importer or wholesaler on the first in-state sale. By the time a bottle reaches a retail shelf both are normally baked into the cost — add them here only to model a case where they are not.</div>
+
+      <div style="margin-top:16px"><button class="btn" id="reset" type="button">Reset to defaults</button></div>
+    </div>
+  </div>
+
+  <!-- ============ RESULTS ============ -->
+  <div>
+    <div class="verdict" id="verdict">
+      <div class="vtop">
+        <div>
+          <div class="vlabel" id="vlabel1">Margin per order</div>
+          <div class="bignum" id="marginDollars">$0.00</div>
+        </div>
+        <div>
+          <div class="vlabel">As % of net sales</div>
+          <div class="bignum" id="marginPct">0%</div>
+        </div>
+        <div style="padding-bottom:6px"><span class="tag" id="statusTag">—</span></div>
+      </div>
+
+      <div class="moneybar">
+        <div class="bar" id="bar">
+          <div class="seg" id="segCogs" style="background:#C4643F"><span id="lblCogs"></span></div>
+          <div class="seg" id="segFul" style="background:#8A6A5E"><span id="lblFul"></span></div>
+          <div class="seg" id="segShip" style="background:#5E5450"><span id="lblShip"></span></div>
+          <div class="seg" id="segProc" style="background:#3E3835"><span id="lblProc"></span></div>
+          <div class="seg" id="segMargin" style="background:#4BAE7E"><span id="lblMargin"></span></div>
+        </div>
+        <div class="legend">
+          <span><i style="background:#C4643F"></i><span id="legCogs">Product</span></span>
+          <span><i style="background:#8A6A5E"></i><span id="legFul">Handling &amp; materials</span></span>
+          <span><i style="background:#5E5450"></i>Carrier</span>
+          <span><i style="background:#3E3835"></i>Card fees</span>
+          <span><i style="background:#4BAE7E"></i>Margin</span>
+        </div>
+      </div>
+
+      <div class="vsub" id="verdictNote"></div>
+      <div class="sidenote" id="counterparty"></div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <h2 id="hBreakdown">Order breakdown</h2>
+      <table><tbody id="breakdown"></tbody></table>
+    </div>
+
+    <div class="panel">
+      <h2>What it takes to hit the target</h2>
+      <table><tbody id="solve"></tbody></table>
+      <div class="note" id="solveNote"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Same price, bigger basket</h2>
+      <table class="scen">
+        <thead><tr><th>Units</th><th>Net sales</th><th>Total cost</th><th>Margin</th><th>Margin %</th></tr></thead>
+        <tbody id="scenarios"></tbody>
+      </table>
+      <div class="hint" style="margin-top:12px">Carrier and adult signature are charged once per parcel, so every unit after the first carries far less overhead. Basket size is the strongest lever in either model.</div>
+    </div>
+  </div>
+</div>
+
+<footer id="foot"></footer>
+
+<div style="border-top:1px solid var(--line);margin-top:36px;padding-top:22px;display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center;justify-content:space-between">
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim)">Numbers are estimates for planning &mdash; your live rates come from a discovery call.</div>
+  <div style="display:flex;gap:20px;align-items:center">
+    <a href="index.html" style="color:var(--muted);font-size:13px;text-decoration:none">&#8592; thebevconnect.com</a>
+    <a href="book-a-call.html" style="background:var(--red);color:#fff;font-family:Inter,sans-serif;font-weight:600;font-size:13.5px;padding:11px 20px;border-radius:999px;text-decoration:none">Book a call &#8594;</a>
+  </div>
+</div>
+</div>
+
+<script>
+(function(){
+  var MODE = "retail";
+  var ids = ["brandPrice","distMarkup","retail","units","shipCharged","targetMargin","category",
+             "addlPick","adminFee","handling","handlingAddl","packaging","carrier","addlCarrier",
+             "procPct","procFixed","salesTax","fet","stateExcise"];
+  var defaults = {};
+  ids.forEach(function(id){ defaults[id] = document.getElementById(id).value; });
+
+  function el(id){ return document.getElementById(id); }
+  function v(id){ var n = parseFloat(el(id).value); return isNaN(n) ? 0 : n; }
+  function money(n){
+    var s = Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return (n < 0 ? "\u2212$" : "$") + s;
+  }
+  function pct(n){ return (n*100).toFixed(1) + "%"; }
+
+  var COPY = {
+    retail:{
+      title:"What's left after the bottle ships",
+      lede:"You sell to the distributor, we buy it in and sell it on. This works out our landed cost, the cost to get a parcel out the door, and what's left \u2014 with <b>Go-To Gifting LLC</b> as licensed seller of record and <b>The Bev Connect</b> running the warehouse.",
+      chain:'<b>You</b> \u2192 <b>Distributor</b> \u2192 <em>Go-To Gifting LLC</em> \u2192 <b>Customer</b>',
+      brandLabel:"Your unit price to the distributor",
+      brandHint:"What you invoice. In this model it is the whole of your revenue \u2014 you carry no fulfilment cost.",
+      marginLabel:"Go-To Gifting margin",
+      targetLabel:"Target margin for Go-To Gifting",
+      fulfilHead:"Cost to ship an order",
+      breakdownHead:"Go-To Gifting's order P&L",
+      legCogs:"Product at landed cost",
+      legFul:"Handling & materials",
+      maxLabel:"Highest price you could charge the distributor",
+      foot:"<strong style='color:#9A938C'>How the chain works:</strong> the brand sells to the distributor \u2192 the distributor sells to Go-To Gifting LLC, which takes title and is the licensed seller of record on every retail sale (CA ABC Type 21, license 21-666163) \u2192 The Bev Connect, LLC operates the warehouse and fulfilment as an unlicensed third-party logistics provider. No pick &amp; pack fee is charged, because Go-To Gifting owns the goods it is picking."
+    },
+    fee:{
+      title:"What's left when you keep the sale",
+      lede:"You stay seller of record on your own licence and we fulfil. This works out what you keep on an order after product, our fees, and freight \u2014 with <b>The Bev Connect</b> picking, packing and shipping against your inventory.",
+      chain:'<b>You</b> \u2192 <b>Customer</b>&nbsp;&nbsp;\u00B7&nbsp;&nbsp;<em>The Bev Connect</em> fulfils',
+      brandLabel:"Your cost per unit",
+      brandHint:"Your landed cost for the goods sitting in our warehouse.",
+      marginLabel:"Your margin per order",
+      targetLabel:"Your target margin on net sales",
+      fulfilHead:"Fulfilment fees & freight",
+      breakdownHead:"Your order P&L",
+      legCogs:"Your product cost",
+      legFul:"Our fees & materials",
+      maxLabel:"Highest product cost that still works, per unit",
+      foot:"<strong style='color:#9A938C'>How the chain works:</strong> you hold the licence and remain seller of record on every transaction. The Bev Connect, LLC stores your inventory and picks, packs and ships to your customers as an unlicensed third-party logistics provider. Carrier rates are passed through at our negotiated cost with a flat admin fee; packaging is billed at cost."
+    }
+  };
+
+  function setMode(mode){
+    MODE = mode;
+    el("btnRetail").setAttribute("aria-pressed", mode === "retail");
+    el("btnFee").setAttribute("aria-pressed", mode === "fee");
+    Array.prototype.forEach.call(document.querySelectorAll("[data-mode]"), function(node){
+      node.hidden = node.getAttribute("data-mode") !== mode;
+    });
+    var c = COPY[mode];
+    el("hTitle").textContent = c.title;
+    el("hLede").innerHTML = c.lede;
+    el("chain").innerHTML = c.chain;
+    el("lblBrandPrice").textContent = c.brandLabel;
+    el("hintBrandPrice").textContent = c.brandHint;
+    el("vlabel1").textContent = c.marginLabel;
+    el("lblTarget").textContent = c.targetLabel;
+    el("hFulfil").textContent = c.fulfilHead;
+    el("hBreakdown").textContent = c.breakdownHead;
+    el("legCogs").textContent = c.legCogs;
+    el("legFul").innerHTML = c.legFul;
+    el("foot").innerHTML = c.foot + "<br><br>Estimate only. Carrier costs vary by zone, weight and dimensional pricing; sales tax varies by destination; state-by-state shipping permissions apply. Not tax or legal advice \u2014 confirm excise treatment and any private-label structure with counsel before launch.";
+    render();
+  }
+
+  function stack(units){
+    var fee = MODE === "fee";
+    var pickBase = fee ? parseFloat(el("category").value) : v("handling");
+    var pickAddl = fee ? v("addlPick") : v("handlingAddl");
+    var pick = pickBase + pickAddl * Math.max(0, units - 1);
+    var admin = fee ? v("adminFee") : 0;
+    var pack = v("packaging");
+    var packTotal = pack + (pack * 0.25) * Math.max(0, units - 1);
+    var carrierTotal = v("carrier") + v("addlCarrier") * Math.max(0, units - 1);
+    var landed = fee
+      ? v("brandPrice") + v("fet") + v("stateExcise")
+      : v("brandPrice") * (1 + v("distMarkup")/100) + v("fet") + v("stateExcise");
+    return {pick:pick, admin:admin, packTotal:packTotal, carrierTotal:carrierTotal,
+            fulfil:pick + admin + packTotal, landed:landed};
+  }
+
+  function model(units){
+    var s = stack(units);
+    var retail = v("retail"), ship = v("shipCharged");
+    var p = v("procPct")/100, pf = v("procFixed"), t = v("salesTax")/100;
+    var cogs = s.landed * units;
+    var merch = retail * units;
+    var tax = merch * t;
+    var proc = (merch + ship + tax) * p + pf;
+    var net = merch + ship;
+    var cost = cogs + s.fulfil + s.carrierTotal + proc;
+    var margin = net - cost;
+    return {s:s, cogs:cogs, merch:merch, tax:tax, proc:proc, net:net,
+            cost:cost, margin:margin, marginPct: net ? margin/net : 0, landed:s.landed};
+  }
+
+  function retailFor(m, units){
+    var s = stack(units);
+    var p = v("procPct")/100, pf = v("procFixed"), t = v("salesTax")/100, sh = v("shipCharged");
+    var K = s.landed*units + s.fulfil + s.carrierTotal + pf;
+    var denom = units * (1 - (1+t)*p - m);
+    if (denom <= 0) return null;
+    return (K + sh*(p - 1 + m)) / denom;
+  }
+
+  function render(){
+    var units = Math.max(1, Math.round(v("units")));
+    var m = model(units);
+    var target = v("targetMargin")/100;
+    var c = COPY[MODE];
+
+    el("marginDollars").textContent = money(m.margin);
+    el("marginPct").textContent = pct(m.marginPct);
+    el("marginDollars").className = "bignum " + (m.margin < 0 ? "neg" : "pos");
+    el("marginPct").className = "bignum " + (m.margin < 0 ? "neg" : "pos");
+
+    var state = m.margin < 0 ? "bad" : (m.marginPct < target ? "warn" : "good");
+    el("verdict").className = "verdict " + (state === "bad" ? "" : state);
+    el("statusTag").className = "tag " + state;
+    el("statusTag").textContent = state === "bad" ? "Loses money" : state === "warn" ? "Under target" : "Clears target";
+
+    var parts = [["segCogs","lblCogs",m.cogs],["segFul","lblFul",m.s.fulfil],
+                 ["segShip","lblShip",m.s.carrierTotal],["segProc","lblProc",m.proc],
+                 ["segMargin","lblMargin",Math.max(0,m.margin)]];
+    var totalBar = parts.reduce(function(a,b){return a + b[2];},0) || 1;
+    parts.forEach(function(pt){
+      var share = pt[2]/totalBar;
+      el(pt[0]).style.flexGrow = share;
+      el(pt[1]).textContent = share > 0.11 ? money(pt[2]) : "";
+    });
+    el("segMargin").style.background = m.margin < 0 ? "#3E3835" : "#4BAE7E";
+
+    var breakeven = retailFor(0, units), atTarget = retailFor(target, units);
+    var who = MODE === "retail" ? "this order" : "this order";
+    var note;
+    if (m.margin < 0){
+      note = "At " + money(v("retail")) + " a unit and " + units + " unit" + (units>1?"s":"") +
+        " an order, " + who + " ships at a loss of <strong>" + money(Math.abs(m.margin)) +
+        "</strong>. Break-even is <strong>" + (breakeven ? money(breakeven) : "unreachable") +
+        "</strong> a unit; the " + (target*100).toFixed(0) + "% target needs <strong>" +
+        (atTarget ? money(atTarget) : "\u2014") + "</strong>. A bigger basket, paid shipping, or a lower product cost each close the gap.";
+    } else if (m.marginPct < target){
+      note = "Profitable, but short of the " + (target*100).toFixed(0) + "% target by <strong>" +
+        money(m.net*target - m.margin) + "</strong>. The target lands at <strong>" +
+        (atTarget ? money(atTarget) : "\u2014") + "</strong> a unit at this basket size.";
+    } else {
+      note = "Clears the " + (target*100).toFixed(0) + "% target with <strong>" +
+        money(m.margin - m.net*target) + "</strong> to spare. Break-even sits at <strong>" +
+        (breakeven ? money(breakeven) : "\u2014") + "</strong> a unit.";
+    }
+    el("verdictNote").innerHTML = note;
+
+    el("counterparty").innerHTML = MODE === "retail"
+      ? "You receive <strong>" + money(v("brandPrice")*units) + "</strong> on this order \u2014 " + units +
+        " \u00D7 " + money(v("brandPrice")) + ", with no fulfilment cost to you."
+      : "The Bev Connect earns <strong>" + money(m.s.pick + m.s.admin) +
+        "</strong> on this order in pick, pack and admin. Packaging and freight are billed at cost.";
+
+    function row(label, val, cls, dot){
+      return '<tr class="' + (cls||"") + '"><td>' +
+        (dot ? '<span class="dot" style="background:'+dot+'"></span>' : '') + label +
+        '</td><td class="num">' + money(val) + '</td></tr>';
+    }
+    var b = "";
+    b += row("Merchandise (" + units + " \u00D7 " + money(v("retail")) + ")", m.merch, "");
+    b += row("Shipping charged to customer", m.net - m.merch, "");
+    b += row("Sales tax collected \u2014 remitted, not revenue", m.tax, "sub");
+    b += '<tr class="total"><td>Net sales</td><td class="num">' + money(m.net) + '</td></tr>';
+    b += row((MODE === "retail" ? "Product at landed cost (" : "Your product cost (") + units +
+             " \u00D7 " + money(m.landed) + ")", -m.cogs, "cost", "#C4643F");
+    if (MODE === "fee"){
+      b += row("Pick &amp; pack", -m.s.pick, "cost", "#8A6A5E");
+      if (m.s.admin) b += row("Carrier admin fee", -m.s.admin, "cost", "#8A6A5E");
+    } else if (m.s.pick){
+      b += row("Internal handling", -m.s.pick, "cost", "#8A6A5E");
+    }
+    b += row("Packaging &amp; materials", -m.s.packTotal, "cost", "#8A6A5E");
+    b += row("Carrier, adult signature included", -m.s.carrierTotal, "cost", "#5E5450");
+    b += row("Card processing", -m.proc, "cost", "#3E3835");
+    b += '<tr class="total"><td>' + (MODE === "retail" ? "Go-To Gifting margin" : "Your margin") +
+         '</td><td class="num ' + (m.margin<0?"neg":"pos") + '">' + money(m.margin) +
+         '  \u00B7  ' + pct(m.marginPct) + '</td></tr>';
+    el("breakdown").innerHTML = b;
+
+    var s2 = stack(units);
+    var allowedCogs = m.net*(1-target) - s2.fulfil - s2.carrierTotal - m.proc;
+    var maxLanded = allowedCogs / units;
+    var maxBrand = MODE === "retail"
+      ? (maxLanded - v("fet") - v("stateExcise")) / (1 + v("distMarkup")/100)
+      : maxLanded - v("fet") - v("stateExcise");
+
+    var out = "";
+    out += '<tr><td>Retail price for break-even</td><td class="num">' + (breakeven ? money(breakeven) : "\u2014") + '</td></tr>';
+    out += '<tr><td>Retail price for ' + (target*100).toFixed(0) + '% margin</td><td class="num">' + (atTarget ? money(atTarget) : "\u2014") + '</td></tr>';
+    if (MODE === "retail")
+      out += '<tr><td>Highest landed cost that still works, per unit</td><td class="num ' + (maxLanded<0?"neg":"") + '">' + money(maxLanded) + '</td></tr>';
+    out += '<tr class="total"><td>' + c.maxLabel + '</td><td class="num ' + (maxBrand<0?"neg":"pos") + '">' + money(maxBrand) + '</td></tr>';
+    el("solve").innerHTML = out;
+
+    var gap = maxBrand - v("brandPrice");
+    var thing = MODE === "retail" ? "price to the distributor" : "product cost";
+    el("solveNote").innerHTML = gap >= 0
+      ? "At " + money(v("retail")) + " retail and " + units + " unit" + (units>1?"s":"") + " an order, a <strong>" +
+        money(v("brandPrice")) + "</strong> " + thing + " leaves <strong>" + money(gap) + "</strong> of headroom per unit."
+      : "At " + money(v("retail")) + " retail and " + units + " unit" + (units>1?"s":"") + " an order, a <strong>" +
+        money(v("brandPrice")) + "</strong> " + thing + " is <strong>" + money(Math.abs(gap)) +
+        "</strong> a unit above what the shelf price can carry. Close it on price, on basket size, or on shipping revenue.";
+
+    var rows = "";
+    [1,2,3,6,12].forEach(function(u){
+      var r = model(u);
+      rows += '<tr class="' + (u===units?"here":"") + '">' +
+        '<td class="num">' + u + '</td>' +
+        '<td class="num">' + money(r.net) + '</td>' +
+        '<td class="num">' + money(r.cost) + '</td>' +
+        '<td class="num ' + (r.margin<0?"miss":"") + '">' + money(r.margin) + '</td>' +
+        '<td class="num ' + (r.marginPct>=target?"hit":"miss") + '">' + pct(r.marginPct) + '</td></tr>';
+    });
+    el("scenarios").innerHTML = rows;
+  }
+
+  ids.forEach(function(id){
+    el(id).addEventListener("input", render);
+    el(id).addEventListener("change", render);
+  });
+  el("btnRetail").addEventListener("click", function(){ setMode("retail"); });
+  el("btnFee").addEventListener("click", function(){ setMode("fee"); });
+  el("reset").addEventListener("click", function(){
+    ids.forEach(function(id){ el(id).value = defaults[id]; });
+    render();
+  });
+
+  setMode("retail");
+})();
+</script>
+</body>
+</html>
