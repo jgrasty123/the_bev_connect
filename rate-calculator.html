@@ -1410,12 +1410,16 @@ const REGIONS = {
 
 const EXTENDED_ZONES = [44, 45, 46];
 
-// ZIP3 → zone, sourced from the UPS zone chart for origin 930 (Ventura).
-// Built by tools/build_zip3_zones.py. Never hand-built from state guesses.
+// Destination ZIP prefix → WeShip zone, for our Ventura (93003) origin.
+// Source: the WeShip zone map that accompanies the 2025 rate program.
+// Do NOT substitute a UPS or FedEx zone chart — WeShip assigns its own zones
+// and a carrier chart can mis-assign silently (the zone→rate sanity checks
+// will still pass, so the error would not surface).
+// Built by tools/build_weship_zones.py. Never hand-built from state guesses.
 let ZIP3_ZONES = null;
 let ZIP3_STATUS = 'loading';   // 'loading' | 'ready' | 'unavailable'
 
-fetch('assets/data/zip3-zones-930.json')
+fetch('assets/data/weship-zones.json')
   .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
   .then(data => {
     const table = (data && data.zones) ? data.zones : null;

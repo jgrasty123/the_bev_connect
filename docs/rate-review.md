@@ -77,14 +77,20 @@ $1.25 is a program margin adder.
 Re-verify whenever WeShip issues a new rate sheet. `UPS_DAILY` is public UPS
 retail and drives only the savings comparison.
 
-### 5. ZIP3 → zone table
+### 5. Destination ZIP → zone table
 
-`assets/data/zip3-zones-930.json`, built from the UPS zone chart for origin
-930 (Ventura) via `tools/build_zip3_zones.py`.
+`assets/data/weship-zones.json`, built from the **WeShip zone map** for our
+Ventura (93003) origin via `tools/build_weship_zones.py`.
 
-Re-pull when UPS republishes zone charts (typically with an annual rate
+**Use the WeShip zone map, not a UPS or FedEx zone chart.** WeShip assigns its
+own zones under the 2025 program. A carrier chart may draw different
+boundaries, and the resulting mis-assignment would not surface in testing —
+the zone→rate sanity checks only prove that zone 8 costs $35.19 at 30 lb, not
+that a given ZIP actually is zone 8.
+
+Re-pull whenever WeShip reissues the zone map (typically alongside a rate
 change). Never hand-edit this file or infer entries from state guesses — an
-unmapped ZIP3 correctly falls through to "request a quote."
+unmapped prefix correctly falls through to "request a quote."
 
 ---
 
