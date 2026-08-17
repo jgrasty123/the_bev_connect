@@ -171,7 +171,7 @@
     color: var(--text-white);
     margin-bottom: 8px;
   }
-.calcpage input[type="number"], .calcpage select {
+.calcpage input[type="number"], .calcpage input[type="text"], .calcpage select {
     width: 100%;
     padding: 13px 16px;
     background: rgba(255, 255, 255, 0.04);
@@ -220,6 +220,42 @@
     transition: opacity 200ms ease;
   }
 .calcpage .autonote.show { opacity: 1; }
+.calcpage .autonote.err { color: var(--accent-hi); }
+.calcpage .dest-echo {
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-white);
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+.calcpage .dest-echo.show { opacity: 1; }
+.calcpage .fallback-field { margin-top: 14px; }
+.calcpage .fallback-field > label { color: var(--text-dim-w); }
+.calcpage .configured-note {
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--text-dim-w);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--ink-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+.calcpage .fn-mark {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    vertical-align: super;
+    color: var(--text-mute-b);
+    cursor: help;
+  }
+.calcpage .fn-note {
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--text-mute-b);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--ink-border);
+  }
 .calcpage .toggle-row {
     display: flex;
     align-items: center;
@@ -607,19 +643,25 @@
         <div class="section-label">Destination</div>
 
         <div class="field">
-          <label>Carrier zone</label>
-          <select id="zone">
-            <option value="2">Zone 2</option>
-            <option value="3">Zone 3</option>
-            <option value="4">Zone 4</option>
-            <option value="5">Zone 5</option>
-            <option value="6">Zone 6</option>
-            <option value="7" selected>Zone 7</option>
-            <option value="8">Zone 8</option>
-            <option value="44">Extended zone 44</option>
-            <option value="46">Extended zone 46</option>
+          <label for="dest-zip">Destination ZIP code</label>
+          <input type="text" id="dest-zip" inputmode="numeric" autocomplete="postal-code"
+                 maxlength="5" placeholder="90210" aria-describedby="zip-msg" />
+          <div id="dest-echo" class="dest-echo"></div>
+          <div id="zip-msg" class="autonote" role="status"></div>
+        </div>
+
+        <div class="field fallback-field">
+          <label for="region">No ZIP yet? Estimate by region</label>
+          <select id="region">
+            <option value="">— Using ZIP code above —</option>
+            <option value="west">West Coast</option>
+            <option value="mountain">Mountain &amp; Southwest</option>
+            <option value="central">Central &amp; Texas</option>
+            <option value="midsouth">Midwest &amp; South</option>
+            <option value="east">East Coast &amp; Northeast</option>
+            <option value="offshore">Alaska, Hawaii, Puerto Rico</option>
           </select>
-          <div id="ship-note" class="autonote show">Use the carrier zone for the destination ZIP code.</div>
+          <div id="region-note" class="autonote">Region estimates show a range. Enter a ZIP for an exact figure.</div>
         </div>
 
         <div class="toggle-row">
@@ -648,18 +690,7 @@
           <div class="subgroup">
             <div class="subgroup-label">Shipping</div>
             <div class="field">
-              <label>Fuel surcharge</label>
-              <div class="input-with-suffix">
-                <input type="number" id="fuel" min="0" step="0.5" value="18.5" />
-                <span class="suffix">%</span>
-              </div>
-            </div>
-            <div class="field">
-              <label>Bev Connect admin fee</label>
-              <div class="input-with-suffix">
-                <input type="number" id="admin" min="0" step="0.5" value="8" />
-                <span class="suffix">%</span>
-              </div>
+              <div class="configured-note" id="configured-note"></div>
             </div>
             <div class="field">
               <label>Ice pack quantity</label>
@@ -727,7 +758,7 @@
           <div class="od-arrow">→</div>
           <div class="od-col" style="text-align:right;">
             <div class="k">Destination</div>
-            <div class="v" id="dest-name">Carrier zone 7</div>
+            <div class="v" id="dest-name">Enter a ZIP</div>
           </div>
         </div>
 
@@ -757,7 +788,7 @@
             <div class="amt" id="v-base">—</div>
           </div>
           <div class="li" id="li-fuel">
-            <div>Fuel surcharge<span class="sub" id="sub-fuel"></span></div>
+            <div>Fuel &amp; carrier surcharges<span class="fn-mark" id="fn-fuel" title="Carriers add a fuel surcharge that changes weekly with diesel prices. We pass it through at cost — no markup.">&#9432;</span><span class="sub" id="sub-fuel"></span></div>
             <div class="amt" id="v-fuel">—</div>
           </div>
           <div class="li" id="li-admin">
@@ -799,6 +830,7 @@
         <div class="total">
           <div class="lbl">Estimated total</div>
           <div class="amt" id="v-total">$0.00</div>
+          <div class="fn-note">Carriers add a fuel surcharge that changes weekly with diesel prices. We pass it through at cost &mdash; no markup.</div>
           <div class="total-sub">Based on our 2025 rate sheet + current WeShip pricing. Fuel is billed at UPS's published weekly rate. Excludes monthly account minimum ($150) and storage.</div>
         </div>
 
@@ -818,7 +850,7 @@
   </div>
 
   <div class="disclaimer">
-    <strong>How this works.</strong> Shipping is carrier pass-through (WeShip-negotiated UPS Ground) plus fuel surcharge plus 8% admin. Pick &amp; pack, upsells, and packaging materials are billed per our published rate sheet. Select the carrier zone for the destination ZIP; the final zone is confirmed at label creation. Our shipping rate already includes adult signature, residential delivery, and DAS, which UPS bills as separate accessorials at retail. <strong>The invoice always wins</strong> — this is a good-faith estimate, not a binding quote.
+    <strong>How this works.</strong> Shipping is carrier pass-through (WeShip-negotiated UPS Ground) plus fuel surcharge plus 8% admin. Pick &amp; pack, upsells, and packaging materials are billed per our published rate sheet. Enter the destination ZIP code and we resolve the carrier zone for you; the final zone is confirmed at label creation. Our shipping rate already includes adult signature, residential delivery, and DAS, which UPS bills as separate accessorials at retail. <strong>The invoice always wins</strong> — this is a good-faith estimate, not a binding quote.
   </div>
 
 
@@ -1314,6 +1346,27 @@ const UPS_DAILY = [
 
 const ZONE_COL = { 2:0, 3:1, 4:2, 5:3, 6:4, 7:5, 8:6, 44:7, 45:8, 46:9 };
 
+// ─── Configured rates ──────────────────────────────────────
+// These are configuration, not customer inputs. Both remain visible as
+// disclosed lines in the breakdown.
+
+// Fuel: reviewed monthly against the UPS published ground fuel surcharge.
+// Last reviewed: 2026-08-17 — see /docs/rate-review.md
+// NOTE: 15% is back-solved from WeShip invoices (BoozeFinders, May–Jun 2026),
+// not a quoted rate. Confirm with the WeShip rep and set deliberately.
+const FUEL_SURCHARGE_PCT = 15.0;
+
+// Bev Connect admin, applied to (carrier base + fuel).
+const ADMIN_FEE_PCT = 8.0;
+
+// Adult signature treatment — see Rate Calculator v2 handoff, Open Question 1.
+//   'inclusive' → ASR is already priced into the WeShip grid (current assumption)
+//   'stacked'   → ASR is billed on top of the grid rate
+// Flipping this constant is the only change required if WeShip confirms ASR
+// is a separate accessorial.
+const ASR_TREATMENT = 'inclusive';
+const ASR_SURCHARGE = 5.92;
+
 // Retail add-ons hidden inside WeShip Ground
 const RETAIL_SIG = 9.95;
 const RETAIL_RES = 6.30;
@@ -1344,11 +1397,109 @@ const COMPLIANCE_FEE = 0.50;
 const MATERIALS_ADMIN_PCT = 12;
 const ICE_1_6 = 7.37, ICE_7_12 = 9.39;
 
+// ─── Destination resolution ────────────────────────────────
+// Region fallback produces a RANGE, never a point estimate.
+const REGIONS = {
+  west:     { label: 'West Coast',              zones: [2, 3] },
+  mountain: { label: 'Mountain & Southwest',    zones: [4, 5] },
+  central:  { label: 'Central & Texas',         zones: [6] },
+  midsouth: { label: 'Midwest & South',         zones: [7] },
+  east:     { label: 'East Coast & Northeast',  zones: [8] },
+  offshore: { label: 'Alaska, Hawaii, Puerto Rico', zones: [44, 45, 46] },
+};
+
+const EXTENDED_ZONES = [44, 45, 46];
+
+// ZIP3 → zone, sourced from the UPS zone chart for origin 930 (Ventura).
+// Built by tools/build_zip3_zones.py. Never hand-built from state guesses.
+let ZIP3_ZONES = null;
+let ZIP3_STATUS = 'loading';   // 'loading' | 'ready' | 'unavailable'
+
+fetch('assets/data/zip3-zones-930.json')
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(data => {
+    const table = (data && data.zones) ? data.zones : null;
+    if (table && Object.keys(table).length > 0) {
+      ZIP3_ZONES = table;
+      ZIP3_STATUS = 'ready';
+    } else {
+      ZIP3_STATUS = 'unavailable';
+    }
+  })
+  .catch(() => { ZIP3_STATUS = 'unavailable'; })
+  .finally(() => calc());
+
 const state = { alcohol: true, ice: false, card: false, advOpen: false };
 
 const $ = id => document.getElementById(id);
 const money = n => "$" + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 const ceilLb = x => Math.ceil(Math.max(0.0001, x));
+const moneyRange = (lo, hi) =>
+  (Math.abs(hi - lo) < 0.005) ? money(lo) : money(lo) + ' – ' + money(hi);
+
+/**
+ * Resolve what the customer told us into a set of candidate zones.
+ * Returns { zones, label, mode, extended, error }.
+ *   zones  — [] when we cannot price the destination
+ *   mode   — 'zip' (point estimate) | 'region' (range) | 'none'
+ */
+function resolveDestination() {
+  const rawZip = ($('dest-zip').value || '').trim();
+  const regionKey = $('region').value;
+
+  // Region fallback takes over only when no ZIP has been entered.
+  if (!rawZip && regionKey && REGIONS[regionKey]) {
+    const r = REGIONS[regionKey];
+    return {
+      zones: r.zones.slice(),
+      label: r.label,
+      mode: 'region',
+      extended: r.zones.some(z => EXTENDED_ZONES.indexOf(z) !== -1),
+      error: '',
+    };
+  }
+
+  if (!rawZip) {
+    return { zones: [], label: 'Enter a ZIP', mode: 'none', extended: false, error: '' };
+  }
+
+  if (!/^\d{5}$/.test(rawZip)) {
+    const msg = /[^0-9]/.test(rawZip)
+      ? 'Enter a US ZIP code. For international, contact us.'
+      : 'Enter all 5 digits of the destination ZIP code.';
+    return { zones: [], label: 'Enter a ZIP', mode: 'none', extended: false, error: msg };
+  }
+
+  if (ZIP3_STATUS === 'loading') {
+    return { zones: [], label: 'Checking…', mode: 'none', extended: false, error: '' };
+  }
+
+  if (ZIP3_STATUS === 'unavailable') {
+    return {
+      zones: [], label: 'Unavailable', mode: 'none', extended: false,
+      error: 'ZIP lookup is temporarily unavailable — use the region estimate below or request a quote.',
+    };
+  }
+
+  const zip3 = rawZip.slice(0, 3);
+  const zone = ZIP3_ZONES[zip3];
+
+  // Never silently default to a zone.
+  if (zone === undefined || ZONE_COL[zone] === undefined) {
+    return {
+      zones: [], label: 'Not priceable', mode: 'none', extended: false,
+      error: "We can't price that destination automatically — request a quote.",
+    };
+  }
+
+  return {
+    zones: [zone],
+    label: rawZip,
+    mode: 'zip',
+    extended: EXTENDED_ZONES.indexOf(zone) !== -1,
+    error: '',
+  };
+}
 
 function calcPickPack(type, qty) {
   const r = PICK_PACK[type];
@@ -1362,12 +1513,41 @@ function calcPickPack(type, qty) {
   return { cost: cost, label: qty + ' ' + unit, isCase: false };
 }
 
+/**
+ * Carrier base + fuel + admin for one zone.
+ * Isolated so the lookup can move server-side without touching calc().
+ */
+function shippingForZone(zone, billed, alcohol) {
+  const col = ZONE_COL[zone];
+  const rowIdx = billed - 1;
+  const table = alcohol ? WESHIP_ASR : WESHIP_NASR;
+
+  let base = 0;
+  if (rowIdx >= 0 && rowIdx < table.length && col !== undefined) {
+    base = table[rowIdx][col];
+  }
+  if (alcohol && ASR_TREATMENT === 'stacked') base += ASR_SURCHARGE;
+
+  const fuel = base * (FUEL_SURCHARGE_PCT / 100);
+  const admin = (base + fuel) * (ADMIN_FEE_PCT / 100);
+  return { base: base, fuel: fuel, admin: admin, total: base + fuel + admin };
+}
+
+function retailForZone(zone, billed, alcohol) {
+  const col = ZONE_COL[zone];
+  const rowIdx = billed - 1;
+  if (rowIdx < 0 || rowIdx >= UPS_DAILY.length || col === undefined) return 0;
+  const dailyBase = UPS_DAILY[rowIdx][col];
+  const sig = alcohol ? RETAIL_SIG : 0;
+  const retailSub = dailyBase + sig + RETAIL_RES;
+  return retailSub + (retailSub * FUEL_SURCHARGE_PCT / 100);
+}
+
 function calc() {
   const L = parseFloat($('length').value) || 0;
   const W = parseFloat($('width').value)  || 0;
   const H = parseFloat($('height').value) || 0;
   const actualRaw = parseFloat($('actual').value) || 0;
-  const zone = parseInt($('zone').value, 10);
   const productType = $('product-type').value;
   const quantity = Math.max(1, parseInt($('quantity').value) || 1);
 
@@ -1380,13 +1560,45 @@ function calc() {
   };
   $('qty-label').textContent = unitLabels[productType] || 'Quantity';
 
+  $('configured-note').innerHTML =
+    'Fuel &amp; carrier surcharges (' + FUEL_SURCHARGE_PCT + '%) and Bev Connect admin (' +
+    ADMIN_FEE_PCT + '%) are set from our current carrier agreement and reviewed monthly. ' +
+    'Both appear as itemised lines in the estimate.';
+
+  // ── Destination ──────────────────────────────────────────
+  const dest = resolveDestination();
+
+  $('region').disabled = (dest.mode === 'zip');
+  $('region-note').classList.toggle('show', dest.mode === 'region' || dest.mode === 'zip');
+  $('region-note').textContent = (dest.mode === 'zip')
+    ? 'Using the ZIP code above. Clear it to estimate by region.'
+    : 'Region estimates show a range. Enter a ZIP for an exact figure.';
+
+  const msg = $('zip-msg');
+  msg.textContent = dest.error;
+  msg.classList.toggle('show', !!dest.error);
+  msg.classList.toggle('err', !!dest.error);
+
+  const echo = $('dest-echo');
+  if (dest.mode === 'zip') {
+    echo.textContent = '→ ' + dest.label + (dest.extended ? ' · extended area' : '');
+  } else if (dest.mode === 'region') {
+    echo.textContent = '→ ' + dest.label + ' · range estimate';
+  } else {
+    echo.textContent = '';
+  }
+  echo.classList.toggle('show', echo.textContent !== '');
+
+  $('dest-name').textContent =
+    dest.mode === 'zip' ? dest.label :
+    dest.mode === 'region' ? dest.label : dest.label;
+
+  // ── Weights ──────────────────────────────────────────────
   const cubic = L * W * H;
   const dimRaw = cubic / 139;
   const actualLb = ceilLb(actualRaw);
   const dimLb    = ceilLb(dimRaw);
   const billed   = Math.max(actualLb, dimLb);
-
-  $('dest-name').textContent = 'Carrier zone ' + zone;
 
   $('v-actual').textContent = actualLb + ' lb';
   $('sub-actual').textContent = actualRaw ? '(' + actualRaw + ' lb entered)' : '';
@@ -1397,6 +1609,7 @@ function calc() {
   $('row-actual').classList.toggle('winner', actualLb >= dimLb && actualLb > 0);
   $('row-dim').classList.toggle('winner', dimLb > actualLb);
 
+  // Grid ends at 150 lb — do not extrapolate.
   $('warn').classList.toggle('hidden', billed <= 150);
   if (billed > 150) {
     $('v-base').textContent = '—';
@@ -1407,96 +1620,100 @@ function calc() {
     return;
   }
 
-  const col = ZONE_COL[zone];
-  const rowIdx = billed - 1;
-
-  // Base shipping rate (WeShip ASR or Non-ASR)
-  const rateTable = state.alcohol ? WESHIP_ASR : WESHIP_NASR;
-  let base = 0;
-  if (rowIdx >= 0 && rowIdx < rateTable.length && col !== undefined) {
-    base = rateTable[rowIdx][col];
-  }
-  $('sub-zone').textContent = ' · zone ' + zone;
-  $('v-base').textContent = money(base);
-
   $('includes-alc').innerHTML = state.alcohol
     ? '<strong>Shipping rate includes:</strong> adult signature, residential delivery, DAS + extended DAS.'
     : '<strong>Shipping rate includes:</strong> residential delivery, DAS + extended DAS.';
 
-  // Fuel surcharge
-  const fuelPct = parseFloat($('fuel').value) || 0;
-  const fuel = base * (fuelPct / 100);
-  $('sub-fuel').textContent = ' · ' + fuelPct + '%';
-  $('v-fuel').textContent = money(fuel);
-
-  // Bev Connect admin fee on shipping (carrier pass-through + 8%)
-  const adminPct = parseFloat($('admin').value) || 0;
-  const admin = (base + fuel) * (adminPct / 100);
-  $('sub-admin').textContent = ' · ' + adminPct + '%';
-  $('v-admin').textContent = money(admin);
-
-  const shippingTotal = base + fuel + admin;
-
-  // Pick & pack
+  // ── Fulfillment (destination-independent) ────────────────
   const pp = calcPickPack(productType, quantity);
   $('v-pick').textContent = money(pp.cost);
   $('sub-pick').textContent = ' · ' + pp.label;
   $('li-pick').classList.toggle('hidden', pp.cost === 0);
   $('case-note').classList.toggle('show', pp.isCase === true);
 
-  // Ice packs
   const iceCount = parseInt($('ice-count').value);
   const icePrice = iceCount === 2 ? ICE_7_12 : ICE_1_6;
   const iceCost = state.ice ? icePrice : 0;
   $('v-ice').textContent = money(icePrice);
   $('li-ice').classList.toggle('hidden', !state.ice);
 
-  // Greeting card
   const cardCost = state.card ? GREETING_CARD_FEE : 0;
   $('li-card').classList.toggle('hidden', !state.card);
 
-  // Gift box
   const giftBoxKey = $('gift-box').value;
   const giftBoxCost = GIFT_BOX[giftBoxKey] || 0;
   $('v-box').textContent = money(giftBoxCost);
   $('sub-box').textContent = giftBoxCost > 0 ? ' · ' + GIFT_BOX_LABELS[giftBoxKey] : '';
   $('li-box').classList.toggle('hidden', giftBoxCost === 0);
 
-  // Engraving
   const engCount = Math.max(0, parseInt($('engraving').value) || 0);
   const engCost = engCount * ENGRAVING_PER_ITEM;
   $('v-eng').textContent = money(engCost);
   $('sub-eng').textContent = engCount > 0 ? ' · ' + engCount + ' item' + (engCount > 1 ? 's' : '') : '';
   $('li-eng').classList.toggle('hidden', engCost === 0);
 
-  // Packaging materials (cost + 12% admin)
   const matBase = Math.max(0, parseFloat($('materials').value) || 0);
   const matCost = matBase * (1 + MATERIALS_ADMIN_PCT / 100);
   $('v-mat').textContent = money(matCost);
   $('li-mat').classList.toggle('hidden', matCost === 0);
 
-  // Compliance ($0.50 for alcohol)
   const compCost = state.alcohol ? COMPLIANCE_FEE : 0;
   $('li-comp').classList.toggle('hidden', !state.alcohol);
 
   const fulfillmentTotal = pp.cost + iceCost + cardCost + giftBoxCost + engCost + matCost + compCost;
 
-  const total = shippingTotal + fulfillmentTotal;
-  $('v-total').textContent = money(total);
-
-  // ── Savings vs UPS retail (shipping-only comparison) ──
-  let upsRetail = 0;
-  if (rowIdx >= 0 && rowIdx < UPS_DAILY.length && col !== undefined) {
-    const dailyBase = UPS_DAILY[rowIdx][col];
-    const sig = state.alcohol ? RETAIL_SIG : 0;
-    const retailSub = dailyBase + sig + RETAIL_RES;
-    upsRetail = retailSub + (retailSub * fuelPct / 100);
+  // ── Shipping across candidate zones ──────────────────────
+  if (dest.zones.length === 0) {
+    $('sub-zone').textContent = '';
+    $('v-base').textContent = '—';
+    $('sub-fuel').textContent = ' · ' + FUEL_SURCHARGE_PCT + '%';
+    $('v-fuel').textContent = '—';
+    $('sub-admin').textContent = ' · ' + ADMIN_FEE_PCT + '%';
+    $('v-admin').textContent = '—';
+    $('v-total').textContent = dest.error ? 'Request a quote' : 'Enter a ZIP';
+    $('savings-callout').style.display = 'none';
+    return;
   }
-  const savings = Math.max(0, upsRetail - shippingTotal);
-  $('v-savings').textContent = money(savings);
-  if (savings > 0) {
-    const pct = upsRetail > 0 ? Math.round((savings / upsRetail) * 100) : 0;
-    $('sub-savings').textContent = pct + '% off UPS retail on shipping (base + fuel + ' +
+
+  const quotes = dest.zones.map(z => shippingForZone(z, billed, state.alcohol));
+  const lo = q => Math.min.apply(null, quotes.map(q));
+  const hi = q => Math.max.apply(null, quotes.map(q));
+
+  const baseLo = lo(q => q.base),   baseHi = hi(q => q.base);
+  const fuelLo = lo(q => q.fuel),   fuelHi = hi(q => q.fuel);
+  const admLo  = lo(q => q.admin),  admHi  = hi(q => q.admin);
+  const shipLo = lo(q => q.total),  shipHi = hi(q => q.total);
+
+  // Zone shown as muted debugging text only — never leads.
+  $('sub-zone').textContent = ' · zone ' + dest.zones.join('/');
+  $('v-base').textContent  = moneyRange(baseLo, baseHi);
+  $('sub-fuel').textContent = ' · ' + FUEL_SURCHARGE_PCT + '%';
+  $('v-fuel').textContent  = moneyRange(fuelLo, fuelHi);
+  $('sub-admin').textContent = ' · ' + ADMIN_FEE_PCT + '%';
+  $('v-admin').textContent = moneyRange(admLo, admHi);
+
+  $('v-total').textContent = moneyRange(shipLo + fulfillmentTotal, shipHi + fulfillmentTotal);
+
+  // Extended-area advisory (AK / HI / PR)
+  if (dest.extended && !dest.error) {
+    msg.textContent = 'Extended-area destination — confirm before ordering.';
+    msg.classList.add('show');
+    msg.classList.remove('err');
+  }
+
+  // ── Savings vs UPS retail (shipping only) ────────────────
+  const retails = dest.zones.map(z => retailForZone(z, billed, state.alcohol));
+  const savings = dest.zones.map((z, i) => Math.max(0, retails[i] - quotes[i].total));
+  const savLo = Math.min.apply(null, savings);
+  const savHi = Math.max.apply(null, savings);
+
+  if (savHi > 0) {
+    $('v-savings').textContent = moneyRange(savLo, savHi);
+    const pcts = dest.zones.map((z, i) =>
+      retails[i] > 0 ? Math.round((savings[i] / retails[i]) * 100) : 0);
+    const pLo = Math.min.apply(null, pcts), pHi = Math.max.apply(null, pcts);
+    const pctText = pLo === pHi ? pLo + '%' : pLo + '–' + pHi + '%';
+    $('sub-savings').textContent = pctText + ' off UPS retail on shipping (base + fuel + ' +
       (state.alcohol ? 'adult signature + ' : '') + 'residential).';
     $('savings-callout').style.display = 'grid';
   } else {
@@ -1504,7 +1721,7 @@ function calc() {
   }
 }
 
-['length','width','height','actual','fuel','admin','handling','zone','ice-count',
+['length','width','height','actual','dest-zip','region','ice-count',
  'product-type','quantity','gift-box','engraving','materials'].forEach(id => {
   const el = $(id);
   if (el) {
