@@ -4,11 +4,11 @@ THE BEV CONNECT — multi-page lead-capture site
 PAGES
   index.html         Home (3PL-first hero, services, rate-sheet capture, FAQ)
   fulfillment.html   Full 3PL capabilities + rate comparison table
-  rate-sheet.html    Email-gated rate sheet download (lead magnet)
+  rate-sheet.html    Email-gated pricing & programs download (lead magnet)
   marketing.html     Marketing services (demoted sub-page) + tiers
   book-a-call.html   Calendly embed + fallback lead form
   thank-you.html     Post-submission landing page
-  assets/            style.css, main.js, downloads/the-bev-connect-rate-sheet.pdf
+  assets/            style.css, main.js, downloads/the-bev-connect-pricing-and-programs.pdf
 
 
 =====================================================================
@@ -39,8 +39,8 @@ DELIVERING THE PDF AUTOMATICALLY:
 Netlify Forms doesn't auto-email an attachment. Two options:
   A) Simple: the thank-you page can link the PDF directly. (Add a
      "Download now" button pointing to
-     /assets/downloads/the-bev-connect-rate-sheet.pdf — tell me and
-     I'll wire it.)
+     /assets/downloads/the-bev-connect-pricing-and-programs.pdf —
+     already wired on thank-you.html.)
   B) Automated email: connect the form to Zapier/Make (Netlify has a
      native Zapier hook) and have it send the PDF on each submission.
 
