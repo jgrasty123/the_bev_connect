@@ -1,3 +1,6 @@
-/rate-sheet-pdf   /assets/downloads/the-bev-connect-rate-sheet.pdf   200
+/rate-sheet-pdf   /assets/downloads/the-bev-connect-pricing-and-programs.pdf   200
 /thank-you        /thank-you.html   200
 /overview-deck-pdf   /assets/downloads/the-bev-connect-overview-deck.pdf   200
+
+# Old rate-sheet asset path — preserved for links already sent to leads
+/assets/downloads/the-bev-connect-rate-sheet.pdf   /assets/downloads/the-bev-connect-pricing-and-programs.pdf   301

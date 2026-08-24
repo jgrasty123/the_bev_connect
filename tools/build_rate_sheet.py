@@ -1,5 +1,23 @@
 #!/usr/bin/env python3
 """
+SUPERSEDED — DO NOT RUN.  (2026-08-24)
+
+The single-page ReportLab rate sheet this script builds was replaced by a
+designed two-page PDF covering both programs:
+
+    assets/downloads/the-bev-connect-pricing-and-programs.pdf
+
+That file is now the source of truth and is NOT generated from this repo.
+Running this script writes to a path nothing links to any more; if the OUT
+path is ever pointed back at the live PDF it will silently clobber the
+designed file with stale single-program pricing.
+
+Kept for the layout geometry only. To change published pricing, update the
+designed PDF and re-drop it, then update the teaser figures in index.html
+and rate-sheet.html to match.
+
+--- original docstring below ---
+
 Regenerates assets/downloads/the-bev-connect-rate-sheet.pdf
 
 The original PDF was produced with ReportLab but its source script was never
@@ -31,7 +49,7 @@ W, H = letter                      # 612 x 792
 L, R = 43.2, 568.8                 # content margins
 
 OUT = os.path.join(os.path.dirname(__file__), '..',
-                   'assets', 'downloads', 'the-bev-connect-rate-sheet.pdf')
+                   'assets', 'downloads', '_legacy-rate-sheet-DO-NOT-PUBLISH.pdf')
 
 # ---------------------------------------------------------------- content
 # Per-category rate rows: (label, wine, spirits, beer)

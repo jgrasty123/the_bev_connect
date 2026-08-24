@@ -91,7 +91,9 @@ section{padding:84px 0}
 .feat .ico svg{width:24px;height:24px}
 .feat h3{font-size:1.18rem;margin-bottom:8px}
 .feat p{color:var(--muted);font-size:.96rem}
-@media(max-width:860px){.feat-grid{grid-template-columns:1fr}}
+.feat-grid.two{grid-template-columns:repeat(2,1fr)}
+.feat .price-tag{font-family:var(--display);font-weight:900;font-size:1.35rem;color:var(--red);margin-bottom:10px;display:block}
+@media(max-width:860px){.feat-grid,.feat-grid.two{grid-template-columns:1fr}}
 
 .why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line-dark);border-radius:var(--radius);overflow:hidden}
 .why{padding:30px 26px;border-right:1px solid var(--line-dark)}
